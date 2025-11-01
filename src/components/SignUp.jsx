@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import Header from './Header'
 import { toast, Bounce } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth"
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,updateProfile, signInWithPopup, GoogleAuthProvider } from "firebase/auth"
 import { db } from '../firebase.js'
 import { doc, getDoc, setDoc } from "firebase/firestore"; 
 import { auth, provider } from '../firebase.js'
@@ -40,32 +40,37 @@ function SignUp() {
     }
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password)
-      const user = userCredential.user
-      console.log("User signed up:", user)
+  const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+  const user = userCredential.user;
 
-      toast.success('Signed up successfully!', {
-        position: 'top-right',
-        autoClose: 3000,
-        transition: Bounce
-      })
-      setName('')
-      setEmail('')
-      setPassword('')
-      setConfirmPassword('')
+  // Set the displayName on the Firebase Auth user
+  await updateProfile(user, {
+    displayName: name,
+  });
 
-      
-      await createDoc(user)
+  console.log("User signed up:", user);
 
-      navigate('/dashboard')
+  toast.success('Signed up successfully!', {
+    position: 'top-right',
+    autoClose: 3000,
+    transition: Bounce
+  });
 
+  setName('');
+  setEmail('');
+  setPassword('');
+  setConfirmPassword('');
 
-    } catch (error) {
-      console.error("Firebase error:", error)
-      toast.error(error.message)
-    } finally {
-      setLoading(false)
-    }
+  await createDoc(user);
+
+  navigate('/dashboard');
+
+} catch (error) {
+  console.error("Firebase error:", error);
+  toast.error(error.message);
+} finally {
+  setLoading(false);
+}
   }
 
   const handleLogin = async (e) => {

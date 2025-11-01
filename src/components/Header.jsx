@@ -45,7 +45,7 @@ const Header = () => {
           alt='User photo'
           className='w-9 h-9 rounded-2xl'
           />
-          <p className='text-white font-semibold'>Welcome {user.displayName}</p>
+          <p className='text-white font-semibold'>Welcome {user.displayName || "User"}</p>
           <button className='font-semibold px-4 py-1 bg-white text-blue-500 rounded-lg hover:text-white hover:bg-blue-700 cursor-pointer' onClick={handleLogout}>Logout</button>
         </div>
         )}
